@@ -3,72 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Login</title>
+<title>Scientific Calculator</title>
 <style>
   body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
   }
-  #login-container {
+  #calculator {
     width: 300px;
-    margin: 0 auto;
-    margin-top: 100px;
+    margin: 100px auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
-  input[type="text"], input[type="password"] {
+  input[type="text"] {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
+    margin-bottom: 10px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
-  input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
+  input[type="button"] {
+    width: 45px;
+    height: 45px;
+    margin: 5px;
+    font-size: 18px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  input[type="button"]:hover {
+    background-color: #f0f0f0;
+  }
+  input[type="button"].operator {
     background-color: #4CAF50;
     color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  }
+  input[type="button"].operator:hover {
+    background-color: #45a049;
   }
 </style>
 </head>
 <body>
 
-<div id="login-container">
-  <h2>Student Login</h2>
-  <form id="login-form">
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <input type="submit" value="Login">
-  </form>
+<div id="calculator">
+  <input type="text" id="display" readonly>
+  <br>
+  <input type="button" value="7" onclick="appendToDisplay('7')">
+  <input type="button" value="8" onclick="appendToDisplay('8')">
+  <input type="button" value="9" onclick="appendToDisplay('9')">
+  <input type="button" value="/" class="operator" onclick="appendToDisplay('/')">
+  <br>
+  <input type="button" value="4" onclick="appendToDisplay('4')">
+  <input type="button" value="5" onclick="appendToDisplay('5')">
+  <input type="button" value="6" onclick="appendToDisplay('6')">
+  <input type="button" value="*" class="operator" onclick="appendToDisplay('*')">
+  <br>
+  <input type="button" value="1" onclick="appendToDisplay('1')">
+  <input type="button" value="2" onclick="appendToDisplay('2')">
+  <input type="button" value="3" onclick="appendToDisplay('3')">
+  <input type="button" value="-" class="operator" onclick="appendToDisplay('-')">
+  <br>
+  <input type="button" value="0" onclick="appendToDisplay('0')">
+  <input type="button" value="." onclick="appendToDisplay('.')">
+  <input type="button" value="=" class="operator" onclick="calculate()">
+  <input type="button" value="+" class="operator" onclick="appendToDisplay('+')">
+  <br>
+  <input type="button" value="AC" onclick="clearDisplay()" style="width: 100%;">
 </div>
 
 <script>
-document.getElementById("login-form").addEventListener("submit", function(event) {
-  event.preventDefault(); // Prevent default form submission
-  
-  // Get input values
-  var username = document.getElementById("username").value;
-  var password = document.getElementById("password").value;
-  
-  // Here you can perform validation and authentication
-  // For this basic example, let's check if username and password are not empty
-  if (username.trim() === "" || password.trim() === "") {
-    alert("Please enter username and password.");
-  } else {
-    // You can replace this with your authentication logic
-    // For now, let's just display a success message
-    alert("Login successful. Welcome, " + username + "!");
-    // You can redirect to another page or perform any action here
+function appendToDisplay(value) {
+  document.getElementById("display").value += value;
+}
+
+function clearDisplay() {
+  document.getElementById("display").value = "";
+}
+
+function calculate() {
+  try {
+    var result = eval(document.getElementById("display").value);
+    document.getElementById("display").value = result;
+  } catch (error) {
+    document.getElementById("display").value = "Error";
   }
-});
+}
 </script>
 
 </body>
 </html>
+
 
