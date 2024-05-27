@@ -1,195 +1,74 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sudoku Game</title>
+<title>Student Login</title>
 <style>
   body {
-    background-image: url('https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072823_1280.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
     font-family: Arial, sans-serif;
-    color: white;
   }
-  #container {
-    width: 400px;
+  #login-container {
+    width: 300px;
     margin: 0 auto;
+    margin-top: 100px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  }
-  table {
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  td {
-    width: 30px;
-    height: 30px;
-    border: 1px solid white;
-    text-align: center;
-  }
-  td[contenteditable="true"] {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    cursor: pointer;
-  }
-  #message {
-    display: none;
-    margin-top: 20px;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: #f9f9f9;
   }
-  #message button {
-    padding: 5px 10px;
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
     background-color: #4CAF50;
-    border: none;
     color: white;
-    border-radius: 3px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<div id="container">
-  <h1>Sudoku Game</h1>
-  <table id="sudoku-board"></table>
-  <div id="message">
-    <p>Congratulations! You won!</p>
-    <button onclick="playAgain()">Play Again</button>
-  </div>
+<div id="login-container">
+  <h2>Student Login</h2>
+  <form id="login-form">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="submit" value="Login">
+  </form>
 </div>
 
 <script>
-function generateSudoku() {
-  let board = [];
-  for (let i = 0; i < 9; i++) {
-    board[i] = [];
-    for (let j = 0; j < 9; j++) {
-      board[i][j] = 0;
-    }
+document.getElementById("login-form").addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevent default form submission
+  
+  // Get input values
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
+  
+  // Here you can perform validation and authentication
+  // For this basic example, let's check if username and password are not empty
+  if (username.trim() === "" || password.trim() === "") {
+    alert("Please enter username and password.");
+  } else {
+    // You can replace this with your authentication logic
+    // For now, let's just display a success message
+    alert("Login successful. Welcome, " + username + "!");
+    // You can redirect to another page or perform any action here
   }
-  fillSudoku(board);
-  return board;
-}
-
-function fillSudoku(board) {
-  fillSudokuHelper(board, 0, 0);
-}
-
-function fillSudokuHelper(board, row, col) {
-  if (row === 9) return true;
-
-  if (col === 9) {
-    return fillSudokuHelper(board, row + 1, 0);
-  }
-
-  let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  shuffle(nums);
-
-  for (let num of nums) {
-    if (isValid(board, row, col, num)) {
-      board[row][col] = num;
-      if (fillSudokuHelper(board, row, col + 1)) return true;
-      board[row][col] = 0;
-    }
-  }
-
-  return false;
-}
-
-function isValid(board, row, col, num) {
-  for (let i = 0; i < 9; i++) {
-    if (board[row][i] === num || board[i][col] === num) return false;
-  }
-
-  let startRow = Math.floor(row / 3) * 3;
-  let startCol = Math.floor(col / 3) * 3;
-
-  for (let i = startRow; i < startRow + 3; i++) {
-    for (let j = startCol; j < startCol + 3; j++) {
-      if (board[i][j] === num) return false;
-    }
-  }
-
-  return true;
-}
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-
-function renderSudoku(board) {
-  let table = document.getElementById("sudoku-board");
-  table.innerHTML = "";
-  for (let i = 0; i < 9; i++) {
-    let row = document.createElement("tr");
-    for (let j = 0; j < 9; j++) {
-      let cell = document.createElement("td");
-      cell.textContent = board[i][j] === 0 ? "" : board[i][j];
-      cell.contentEditable = true;
-      cell.oninput = function() {
-        if (isNaN(parseInt(this.textContent))) {
-          this.textContent = "";
-          return;
-        }
-        board[i][j] = parseInt(this.textContent);
-        if (isSudokuSolved(board)) {
-          document.getElementById("message").style.display = "block";
-        }
-      };
-      row.appendChild(cell);
-    }
-    table.appendChild(row);
-  }
-}
-
-function isSudokuSolved(board) {
-  // Check rows and columns
-  for (let i = 0; i < 9; i++) {
-    let rowSet = new Set();
-    let colSet = new Set();
-    for (let j = 0; j < 9; j++) {
-      if (board[i][j] === 0 || board[j][i] === 0) return false;
-      rowSet.add(board[i][j]);
-      colSet.add(board[j][i]);
-    }
-    if (rowSet.size !== 9 || colSet.size !== 9) return false;
-  }
-
-  // Check 3x3 grids
-  for (let i = 0; i < 9; i += 3) {
-    for (let j = 0; j < 9; j += 3) {
-      let gridSet = new Set();
-      for (let x = i; x < i + 3; x++) {
-        for (let y = j; y < j + 3; y++) {
-          if (board[x][y] === 0) return false;
-          gridSet.add(board[x][y]);
-        }
-      }
-      if (gridSet.size !== 9) return false;
-    }
-  }
-
-  return true;
-}
-
-function playAgain() {
-  document.getElementById("message").style.display = "none";
-  let sudokuBoard = generateSudoku();
-  renderSudoku(sudokuBoard);
-}
-
-let sudokuBoard = generateSudoku();
-renderSudoku(sudokuBoard);
+});
 </script>
 
 </body>
 </html>
+
