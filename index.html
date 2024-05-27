@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,21 +6,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sudoku Game</title>
 <style>
+  body {
+    background-image: url('https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072823_1280.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    color: white;
+  }
+  #container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
   table {
     border-collapse: collapse;
+    margin-top: 20px;
   }
   td {
     width: 30px;
     height: 30px;
-    border: 1px solid black;
+    border: 1px solid white;
     text-align: center;
+  }
+  td[contenteditable="true"] {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+  }
+  #message {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+  }
+  #message button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<h1>Sudoku Game</h1>
-<table id="sudoku-board"></table>
+<div id="container">
+  <h1>Sudoku Game</h1>
+  <table id="sudoku-board"></table>
+  <div id="message">
+    <p>Congratulations! You won!</p>
+    <button onclick="playAgain()">Play Again</button>
+  </div>
+</div>
 
 <script>
 function generateSudoku() {
@@ -98,11 +141,50 @@ function renderSudoku(board) {
           return;
         }
         board[i][j] = parseInt(this.textContent);
+        if (isSudokuSolved(board)) {
+          document.getElementById("message").style.display = "block";
+        }
       };
       row.appendChild(cell);
     }
     table.appendChild(row);
   }
+}
+
+function isSudokuSolved(board) {
+  // Check rows and columns
+  for (let i = 0; i < 9; i++) {
+    let rowSet = new Set();
+    let colSet = new Set();
+    for (let j = 0; j < 9; j++) {
+      if (board[i][j] === 0 || board[j][i] === 0) return false;
+      rowSet.add(board[i][j]);
+      colSet.add(board[j][i]);
+    }
+    if (rowSet.size !== 9 || colSet.size !== 9) return false;
+  }
+
+  // Check 3x3 grids
+  for (let i = 0; i < 9; i += 3) {
+    for (let j = 0; j < 9; j += 3) {
+      let gridSet = new Set();
+      for (let x = i; x < i + 3; x++) {
+        for (let y = j; y < j + 3; y++) {
+          if (board[x][y] === 0) return false;
+          gridSet.add(board[x][y]);
+        }
+      }
+      if (gridSet.size !== 9) return false;
+    }
+  }
+
+  return true;
+}
+
+function playAgain() {
+  document.getElementById("message").style.display = "none";
+  let sudokuBoard = generateSudoku();
+  renderSudoku(sudokuBoard);
 }
 
 let sudokuBoard = generateSudoku();
